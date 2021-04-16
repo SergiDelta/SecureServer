@@ -107,7 +107,14 @@ class SecureServer:
                self.broadcast(msg, conn)
 
          self.socklist.remove(conn)
-         conn.sendall("Timeout. Connection lost with server\r\n".encode() )
+
+         try:
+            conn.sendall("Timeout. Connection lost with server\r\n".encode() )
+         except socket.error:
+            pass
+         except ssl.SSLError:
+            pass
+
          conn.close()
          print("Connection closed with [" + addr[0] + ":" + str(addr[1]) + "]\n" )
          self.record.write("Connection closed with [" + addr[0] + ":" + str(addr[1]) + "]\n")
