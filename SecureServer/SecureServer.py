@@ -20,6 +20,7 @@ import sys
 import threading
 import datetime
 import re
+import traceback
 
 timeout = 30
 certfile = "cert.pem"
@@ -118,6 +119,12 @@ class SecureServer:
          self.socklist.remove(conn)
          conn.close()
 
+      except ssl.SSLError as e:
+         print(e)
+         self.record.write(e + "\n")
+         self.socklist.remove(conn)
+         conn.close()
+
    def broadcast(self, msg, sender):
 
       addr = sender.getpeername()
@@ -137,6 +144,8 @@ class SecureServer:
          try:
             conn, addr = self.serversock.accept()
          except ssl.SSLError:
+            continue
+         except socket.error:
             continue
 
          print("Connected with [" + addr[0] + ":" + str(addr[1]) + "]\n" )
@@ -174,9 +183,9 @@ def main():
       myServer.run()
    except KeyboardInterrupt:
       print()
-   except Exception as e:
-      print(e)
-      file.write("\n<!> ERROR <!>\n\n")
+   except Exception:
+      traceback.print_exc()
+      file.write( traceback.format_exc() )
 
    file.write("\n<-- Session closed: " + datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S") + " -->\n\n")
    file.close()
