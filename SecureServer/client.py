@@ -23,7 +23,8 @@ host = sys.argv[1]
 port = int(sys.argv[2])
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-ctx = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+ctx = ssl.SSLContext(ssl.PROTOCOL_TLS)
+ctx.minimun_version = ssl.PROTOCOL_TLSv1_2
 ctx.check_hostname = False
 ctx.load_default_certs()
 ssock = ctx.wrap_socket(sock)
