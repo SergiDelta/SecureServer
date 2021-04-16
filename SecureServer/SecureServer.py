@@ -27,7 +27,8 @@ keyfile = "key.pem"
 
 def tls_wrap_socket(sock):
 
-      ctx = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+      ctx = ssl.SSLContext(ssl.PROTOCOL_TLS)
+      ctx.minimun_version = ssl.PROTOCOL_TLSv1_2
       ctx.load_cert_chain(certfile, keyfile)
 
       ssock = ctx.wrap_socket(sock, server_side=True)
